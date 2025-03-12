@@ -3,5 +3,5 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-def home(request):
-    return HttpResponse('<h1 style="color:gray;font-size:2rem;text-align:center">hey mama ki obosta tomader</h1>')
+def home(request,id):
+    return HttpResponse(f'<h1 style="color:gray;font-size:2rem;text-align:center">hey mama ki obosta tomader search {id}</h1>')
