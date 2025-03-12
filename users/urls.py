@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import home
+from .views import home,awal
 
 urlpatterns = [
-    path('task/<id>', home)
+    path('task/<id>', home),
+    path('awal/',awal)
 ]
