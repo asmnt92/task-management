@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        {% comment %} <div>
+            {% for emp in emps %}
+            <div>{{emp}} <span>{{task.total_task}}</span></div>
+            <ol>
+            {% for task in emp.tasks.all %}
+                <li>{{task}}</li>  
+            {% endfor %}
+        </ol> 
+            {% endfor %}
+        </div> {% endcomment %}
+
+        {% comment %} <div>
+            <ul>
+            {% for emp in emps %}
+            <li>{{emp}} {{emp.t}}</li>
+            <ol>
+            {% for t in emp.tasks.all %}
+            <li>{{t}}</li>
+            {% endfor %}
+            </ol>
+            {% endfor %}
+        </ul>
+        </div> {% endcomment %}
+
+        {% comment %} <div>
+            {% for task in tasks %}
+            <li>{{task}}-------{{task.created_at}}</li>
+            {% endfor %}
+        </div> {% endcomment %}
+
+        {% comment %} <div>
+            {% for t in ts %}
+            <li>{{t}}--{{t.due_date}}</li>
+            {% endfor %}
+        </div> {% endcomment %}
+
+        {% comment %} <div>
+            {% for e in emps %}
+            <li>{{e}}-----{{e.total}}</li>
+            {% endfor %}
+        </div> {% endcomment %}
+
+        <div>
+            {% for t in tasks %}
+            <li>{{t}}----{{t.status}}</li>
+            {% endfor %}
+        </div>
+</body>
+</html>
