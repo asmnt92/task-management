@@ -1,23 +1,23 @@
 from django import forms
-from tasks.models import Task
+from tasks.models import Task,TaskDetail
 
 # Django Form
 
 
-class TaskForm(forms.Form):
-    title = forms.CharField(max_length=250, label="Task Title")
-    description = forms.CharField(
-        widget=forms.Textarea, label='Task Description')
-    due_date = forms.DateField(widget=forms.SelectDateWidget, label="Due Date")
-    assigned_to = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple, choices=[], label='Assigned To')
+# class TaskForm(forms.Form):
+#     title = forms.CharField(max_length=250, label="Task Title")
+#     description = forms.CharField(
+#         widget=forms.Textarea, label='Task Description')
+#     due_date = forms.DateField(widget=forms.SelectDateWidget, label="Due Date")
+#     assigned_to = forms.MultipleChoiceField(
+#         widget=forms.CheckboxSelectMultiple, choices=[], label='Assigned To')
 
-    def __init__(self, *args, **kwargs):
-        # print(args, kwargs)
-        employees = kwargs.pop("employees", [])
-        super().__init__(*args, **kwargs)
-        self.fields['assigned_to'].choices = [
-            (emp.id, emp.name) for emp in employees]
+#     def __init__(self, *args, **kwargs):
+#         # print(args, kwargs)
+#         employees = kwargs.pop("employees", [])
+#         super().__init__(*args, **kwargs)
+#         self.fields['assigned_to'].choices = [
+#             (emp.id, emp.name) for emp in employees]
 
 
 class StyledFormMixin:
@@ -39,17 +39,21 @@ class StyledFormMixin:
                     'rows': 5
                 })
             elif isinstance(field.widget, forms.SelectDateWidget):
-                print("Inside Date")
+
                 field.widget.attrs.update({
                     "class": "border-2 border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:border-green-500 focus:ring-rose-500"
                 })
             elif isinstance(field.widget, forms.CheckboxSelectMultiple):
-                print("Inside checkbox")
+       
                 field.widget.attrs.update({
                     'class': "space-y-2"
                 })
+            elif isinstance(field.widget,forms.Select):
+                field.widget.attrs.update({
+                    'class':"border-2 border-gray-300 p-3 rounded-lg shadow-sm focus:outline-none focus:border-green-500 focus:ring-rose-500 mt-3"
+                })
             else:
-                print("Inside else")
+           
                 field.widget.attrs.update({
                     'class': self.default_classes
                 })
@@ -72,4 +76,18 @@ class TaskModelForm(StyledFormMixin, forms.ModelForm):
     def __init__(self, *arg, **kwarg):
         super().__init__(*arg, **kwarg)
         self.apply_styled_widgets()
+     
 
+
+class TaskDetailModelForm(StyledFormMixin,forms.ModelForm):
+    class Meta:
+        model=TaskDetail
+        fields=['priority','notes']
+
+        widgets={
+            'priority':forms.Select
+        }
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.apply_styled_widgets()
