@@ -1,7 +1,7 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save,m2m_changed
+from django.core.mail import send_mail
 
 
 class Employee(models.Model):
@@ -67,3 +67,18 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+# @receiver(m2m_changed,sender=Task.assigned_to.through)
+# def send_email_to_employee_when_create_task(sender,instance,action,**kwargs):
+
+#     if action=='post_add':
+#         email=[emp.email for emp in instance.assigned_to.all()]
+#         print(email)
+#         send_mail(
+#             "New Task Assined",
+#             f"here is the new task {instance} you havebeen assigned",
+#             'awal.samanta92@gmail.com',
+#             email,
+#             fail_silently=False,
+#             )    
