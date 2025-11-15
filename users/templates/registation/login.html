@@ -1,22 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="" method='POST'>
-        {% csrf_token %}
-        <p>
-            <label for="1234">username</label>
-            <input type="text" id='1234' name='username'>
-        </p>
-        <p>
-            <label for="123">password</label>
-            <input type="password" id='123' name='password'>
-        </p>
-        <button>submit</button>
+{% extends "base.html" %}
+{% block title %}Sign In{% endblock title %}
+{% block sign_up_in %}class="flex-grow flex items-center justify-center px-6 py-10"{% endblock sign_up_in %}
+{% block content %}
+  <div class=" my-20 bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 w-full max-w-md transition duration-300">
+    <h2 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-100 mb-6">Sign In</h2>
+
+    <form action="" method="POST" class="space-y-5">
+      {% csrf_token %}
+      
+      <!-- Username -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Username
+        </label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+          placeholder="Enter your username"
+          required
+        />
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Password
+        </label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+          placeholder="Enter your password"
+          required
+        />
+
+        <!-- Show Password -->
+        <div class="flex items-center mt-2">
+          <input 
+            id="showPassword" 
+            type="checkbox" 
+            class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+          />
+          <label for="showPassword" class="ml-2 text-sm text-gray-600 dark:text-gray-300 cursor-pointer select-none">
+            Show password
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button 
+        type="submit" 
+        class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+      >
+        Sign In
+      </button>
     </form>
-</body>
-</html>
+  </div>
+{% endblock content %}
+
+{% block script %}
+
+  // Password visibility toggle
+  const passwordInput = document.getElementById('password');
+  const showPasswordCheckbox = document.getElementById('showPassword');
+
+  if (showPasswordCheckbox && passwordInput) {
+    showPasswordCheckbox.addEventListener('change', function() {
+      passwordInput.type = this.checked ? 'text' : 'password';
+    });
+  }
+
+{% endblock script %}

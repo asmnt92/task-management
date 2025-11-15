@@ -44,11 +44,9 @@
           
             <span class='inline-block'>{{task.created_at|timesince}} ago</span>
           
-          <form action="{% url 'delete-task' task.id %}" method='POST'>
-            {% csrf_token %}
 
-            <button class='p-1 bg-red-400 rounded-sm inline-block shadow-black' >submit</button>
-          </form>
+            <a href='{% url "delete-task" task.id %}' class='p-1 bg-red-400 rounded-sm inline-block shadow-black' >delete</a>
+        
        
           
         </div>

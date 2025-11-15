@@ -1,30 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body>
-    {% comment %} <div>
-       <ol>
-            {% for emp in tasks %}
-                <li>
-                    <p>{{emp}}</p>
-                </li>
-                <ul class=text-gray-500>
-                     {% for t in emp.tasks.all %}
-                    <li class='ms-5'>{{t}}</li>
-                    {% endfor %} 
-                </ul>
-            {% endfor %}
-            </ol> 
-            
-    </div> {% endcomment %}
-    <div>
-        <p>{{tasks.c}}</p>
-       
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="max-w-6xl mx-auto my-20 p-6 mt-10 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition duration-300">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">📋 All Tasks</h1>
+
+      <a href="{% url 'create-task' %}"
+         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition">
+        + Create New Task
+      </a>
     </div>
-</body>
-</html>
+
+    <!-- Table Container -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700 rounded-lg transition duration-300">
+        <thead class="bg-gray-100 dark:bg-gray-700">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">#</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Title</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Project</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Assigned To</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Status</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Due Date</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          {% for task in tasks %}
+          {% comment %} onclick="window.location.href='{% url "task-detail" task.id %}'" aita diyeo tr k click able kra jabe  {% endcomment %}
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition" onclick="window.location.href='{% url "task-detail" task.id %}'" >
+            
+            <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">{{ forloop.counter }}</td>
+            <td class="px-4 py-2 font-medium text-gray-900 dark:text-gray-100">{{ task.title }}</td>
+            <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{{ task.project.name }}</td>
+            
+            <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+              {% for emp in task.assigned_to.all %}
+                <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium px-2 py-1 rounded-md">
+                  {{ emp.first_name }}
+                </span>
+              {% empty %}
+                <span class="text-gray-400">No one assigned</span>
+              {% endfor %}
+            </td>
+
+            <td class="px-4 py-2 text-sm">
+              {% if task.status == 'COMPLETED' %}
+                <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded-md text-xs font-medium">Completed</span>
+              {% elif task.status == 'IN_PROGRESS' %}
+                <span class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 px-2 py-1 rounded-md text-xs font-medium">In Progress</span>
+              {% else %}
+                <span class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-1 rounded-md text-xs font-medium">Pending</span>
+              {% endif %}
+            </td>
+
+            <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+              {{ task.due_date }}
+            </td>
+
+            <td class="px-4 py-2 text-sm">
+              <a href="{% url 'task-detail' task.id %}"
+                 class="text-blue-600 dark:text-blue-400 hover:underline">View</a> |
+              <a href="{% url 'update-task' task.id %}"
+                 class="text-yellow-600 dark:text-yellow-400 hover:underline">Edit</a> |
+              <a href="{% url 'delete-task' task.id %}"
+                 class="text-red-600 dark:text-red-400 hover:underline">Delete</a>
+            </td>
+
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center py-6 text-gray-500 dark:text-gray-400">No tasks found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,50 @@
+    <!--  Navbar -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50">
+      <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          TaskMaster
+        </div>
+
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex space-x-6">
+          <li><a href="#" class="hover:text-blue-600 dark:hover:text-blue-400">Features</a></li>
+          <li><a href="#" class="hover:text-blue-600 dark:hover:text-blue-400">Pricing</a></li>
+          <li><a href="#" class="hover:text-blue-600 dark:hover:text-blue-400">About</a></li>
+          <li><a href="#" class="hover:text-blue-600 dark:hover:text-blue-400">Contact</a></li>
+        </ul>
+
+        <!-- Buttons + Dark mode toggle -->
+        <div class="hidden md:flex items-center space-x-3">
+          <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Sign Out</a>
+          
+
+          <!-- Dark Mode Toggle -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            🌙
+          </button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="menu-toggle" class="md:hidden text-gray-700 dark:text-gray-200 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="md:hidden hidden bg-white dark:bg-gray-800 shadow-md">
+        <ul class="flex flex-col space-y-2 py-3 px-6">
+          <li><a href="#" class="block py-2 hover:text-blue-600 dark:hover:text-blue-400">Features</a></li>
+          <li><a href="#" class="block py-2 hover:text-blue-600 dark:hover:text-blue-400">Pricing</a></li>
+          <li><a href="#" class="block py-2 hover:text-blue-600 dark:hover:text-blue-400">About</a></li>
+          <li><a href="#" class="block py-2 hover:text-blue-600 dark:hover:text-blue-400">Contact</a></li>
+          <li><a href="#" class="block py-2 text-blue-500 font-semibold">Sign In</a></li>
+          <li><a href="#" class="block py-2 text-blue-500 font-semibold">Sign Up</a></li>
+        </ul>
+      </div>
+    </header>

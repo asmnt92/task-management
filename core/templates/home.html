@@ -1,17 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body>
-    {% if user.is_authen %}{% endif %}
-    <div class='w-full h-lvh p-20 bg-gray-100'>
-        <div class='w-40 h-40 bg-green-900 rounded-full'>
-            {{user.first_name}}
+
+<!--  Hero -->
+<section
+  class="bg-gradient-to-r from-blue-600 to-blue-500 text-white text-center dark:from-blue-700 dark:to-blue-500 min-h-[calc(100vh-64px)] flex flex-col justify-center items-center transition duration-300">
+  <div class="container mx-auto px-6">
+    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+      Streamline Your Workflow with TaskMaster
+    </h1>
+    <p class="text-lg md:text-xl mb-10 text-blue-100 dark:text-blue-200">
+      Empower your team with our intuitive task management solution.
+    </p>
+    <a href="#"
+      class="bg-white text-blue-600 font-semibold px-8 py-4 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-900 dark:text-blue-300 dark:hover:bg-gray-800 transition duration-300"
+    >Get Started</a>
+  </div>
+</section>
+
+
+    <!--  Features -->
+    <section class="py-24">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-14">Tailored for Every Role</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 hover:shadow-lg transition duration-300"
+          >
+            <h3 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Admin</h3>
+            <ul class="text-gray-600 dark:text-gray-300 space-y-2 text-left">
+              <li>Manage user roles and permissions</li>
+              <li>Generate comprehensive reports</li>
+              <li>Configure system settings</li>
+              <li>Monitor performance</li>
+            </ul>
+          </div>
+
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 hover:shadow-lg transition duration-300"
+          >
+            <h3 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Manager</h3>
+            <ul class="text-gray-600 dark:text-gray-300 space-y-2 text-left">
+              <li>Create and assign tasks</li>
+              <li>Track project progress</li>
+              <li>Set deadlines</li>
+              <li>Generate reports</li>
+            </ul>
+          </div>
+
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 hover:shadow-lg transition duration-300"
+          >
+            <h3 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Employee</h3>
+            <ul class="text-gray-600 dark:text-gray-300 space-y-2 text-left">
+              <li>View assigned tasks</li>
+              <li>Collaborate with teammates</li>
+              <li>Update progress</li>
+              <li>Track productivity</li>
+            </ul>
+          </div>
         </div>
-    </div>
-</body>
-</html>
+      </div>
+    </section>
+
+    <!--  CTA -->
+    <section class="bg-blue-50 dark:bg-gray-800 py-24 text-center">
+      <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-6">Ready to Boost Productivity?</h2>
+        <p class="text-lg text-gray-600 dark:text-gray-300 mb-10">
+          Join thousands of teams already using TaskMaster.
+        </p>
+        <a href="#"
+          class="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+          >Start Free Trial</a
+        >
+      </div>
+    </section>

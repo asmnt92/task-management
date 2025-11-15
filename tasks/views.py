@@ -5,13 +5,19 @@ from tasks.models import Employee, Task, TaskDetail, Project
 from datetime import datetime,timedelta
 from django.db.models import Count,Q
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test,login_required,permission_required
+from users.views import is_admin
 
 
 
 
 # Create your views here.
+def is_manager(user):
+    return user.groups.filter(name='Manager').exists()
+def is_employee(user):
+    return user.groups.filter(name='Employee').exists()
 
-
+@user_passes_test(is_manager,login_url='no-permission')
 def manager_dashboard(request):
     # total_task=Task.objects.count()
     # completed_task=Task.objects.filter(is_completed=True).count()
@@ -56,25 +62,15 @@ def manager_dashboard(request):
 
     return render(request, "dashboard/manager-dashboard.html",context)
 
-
-def user_dashboard(request):
+@user_passes_test(is_employee,login_url='no-permission')
+def employee_dashboard(request):
     
     return render(request, "dashboard/user-dashboard.html")
 
 
-# def test(request):
-#     names = ["Mahmud", "Ahamed", "John", "Mr. X"]
-#     count = 0
-#     for name in names:
-#         count += 1
-#     context = {
-#         "names": names,
-#         "age": 23,
-#         "count": count
-#     }
-#     return render(request, 'test.html', context)
 
-
+@login_required
+@permission_required('tasks.add_task',login_url='no-permission')
 def create_task(request):
     # employees = Employee.objects.all()
     task_form = TaskModelForm()
@@ -82,7 +78,7 @@ def create_task(request):
 
     if request.method == "POST":
         task_form = TaskModelForm(request.POST)
-        task_detail_form=TaskDetailModelForm(request.POST)
+        task_detail_form=TaskDetailModelForm(request.POST,request.FILES)
         if task_form.is_valid() and task_detail_form.is_valid():
 
             """ For Model Form Data """
@@ -102,7 +98,8 @@ def create_task(request):
         }
     return render(request, "task_form.html", context)
 
-
+@login_required
+@permission_required('tasks.change_task',login_url='no-permission')
 def update_task(request,id):
     task=Task.objects.get(id=id)
     task_form = TaskModelForm(instance=task)
@@ -113,7 +110,7 @@ def update_task(request,id):
         
     if request.method == "POST":
         task_form = TaskModelForm(request.POST,instance=task)
-        task_detail_form=TaskDetailModelForm(request.POST)
+        task_detail_form=TaskDetailModelForm(request.POST,request.FILES)
         if TaskDetail.objects.filter(task=task).exists():
             task_detail_form=TaskDetailModelForm(request.POST,instance=task.details)
 
@@ -136,7 +133,8 @@ def update_task(request,id):
         }
     return render(request, "task_form.html", context)
 
-
+@login_required
+@permission_required('tasks.delete_task',login_url='no-permission')
 def delete_task(request,id):
     if request.method=='POST':
         t=Task.objects.get(id=id)
@@ -149,24 +147,42 @@ def delete_task(request,id):
         messages.error(request,'Somethings went wrong')
         return redirect('manager-dashboard')
 
+@login_required
+@permission_required('tasks.view_task', login_url='no-permission')
 def view_task(request):
-    # # tasks=Task.objects.all()
-    # # retrive specific data
-    # # task_3=Task.objects.get(id=3)
-    # tasks=Task.objects.filter(title__icontains='agreement')
-    # # tasks=Task.objects.filter(due_date=date.today())
-    # # tasks=TaskDetail.objects.filter(task.title__icontains='agreement')
-    # tasks=Task.objects.select_related('details').all()
-    # tasks=TaskDetail.objects.select_related('task').all()
-    # tasks=Employee.objects.prefetch_related('tasks').all()
-    task_count=Task.objects.aggregate(c=Count('title'))
-    e=Employee.objects.prefetch_related('tasks').all()
-    for emp in e:
-        print(emp)
-        for t in emp.tasks.all():
-            print(f'>>>> {t}')
+    tasks = Task.objects.select_related('project').prefetch_related('assigned_to').all()
+    return render(request, 'show_task.html', {'tasks': tasks})
+
+@login_required
+@permission_required('tasks.view_taskdetail', login_url='no-permission')
+def task_detail(request,task_id):
+    task=Task.objects.select_related('details').prefetch_related('assigned_to').get(id=task_id)
     
-    return render(request,'show_task.html',{'tasks':task_count})
+    if request.method=='POST':
+        new_status=request.POST.get('task_status')
+        
+        if new_status in dict(task.STATUS_CHOICES).keys():
+            task.status=new_status
+            task.is_completed= new_status == 'COMPLETED'
+            task.save()
+
+
+    return render(request,'dashboard/task-detail.html',{'task':task})
+
+
+
+
+
+
+@login_required
+def dashboard(request):
+    if is_admin(request.user):
+        return redirect('admin-dashboard')
+    elif is_manager(request.user):
+        return redirect('manager-dashboard')
+    elif is_employee(request.user):
+        return redirect('user-dashboard')
+    return redirect('no-permission')
 
 
 
