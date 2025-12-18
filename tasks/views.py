@@ -7,6 +7,9 @@ from django.db.models import Count,Q
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test,login_required,permission_required
 from users.views import is_admin
+from django.views import View
+from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 
 
 
@@ -98,6 +101,42 @@ def create_task(request):
         }
     return render(request, "task_form.html", context)
 
+
+# create task class 
+decorators =[login_required(login_url='users:lg'),permission_required('tasks.add_task',login_url='no-permission')]
+
+@method_decorator(decorators ,name="dispatch")
+class TaskCreate(View):
+    form_class=TaskModelForm
+    template_name = "task_form.html"
+    def get(self,request,*args,**kwargs):
+        task_form = self.form_class()
+        task_detail_form=TaskDetailModelForm() 
+
+        context = {
+        "task_form": task_form,
+        'task_detail':task_detail_form
+        }
+        return render(request,self.template_name, context)
+
+    def post(self,request,*args,**kwargs):
+        task_form = TaskModelForm(request.POST)
+        task_detail_form=TaskDetailModelForm(request.POST,request.FILES)
+        if task_form.is_valid() and task_detail_form.is_valid():
+
+            """ For Model Form Data """
+            task = task_form.save()
+            
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task=task
+            task_detail.save()
+           
+            
+            messages.success(request, "Task Created Successfully")
+            return redirect('create-task')
+   
+
+
 @login_required
 @permission_required('tasks.change_task',login_url='no-permission')
 def update_task(request,id):
@@ -132,6 +171,51 @@ def update_task(request,id):
         'task_detail':task_detail_form
         }
     return render(request, "task_form.html", context)
+
+# update task class 
+decorators =[login_required(login_url='users:lg'),permission_required('tasks.change_task',login_url='no-permission')]
+
+@method_decorator(decorators ,name="dispatch")
+class UpdateTask(View):
+    form_class=''
+    templte_name=''
+
+    def get(self,request,*args,**kwargs):
+        id=kwargs.get('id')
+        task=Task.objects.get(id=id)
+        task_form = TaskModelForm(instance=task)
+        task_detail_form=TaskDetailModelForm()
+        
+        if TaskDetail.objects.filter(task=task).exists():
+            task_detail_form=TaskDetailModelForm(instance=task.details)
+
+        context = {
+        "task_form": task_form,
+        'task_detail':task_detail_form
+        }
+        return render(request, "task_form.html", context)
+
+    def post(self,request,*args,**kwargs):
+        id=kwargs.get('id')
+        task=Task.objects.get(id=id)
+        task_form = TaskModelForm(request.POST,instance=task)
+        task_detail_form=TaskDetailModelForm(request.POST,request.FILES)
+        if TaskDetail.objects.filter(task=task).exists():
+            task_detail_form=TaskDetailModelForm(request.POST,request.FILES,instance=task.details)
+
+        if task_form.is_valid() and task_detail_form.is_valid():
+
+            """ For Model Form Data """
+            task = task_form.save()
+            
+            task_detail = task_detail_form.save(commit=False)
+            task_detail.task=task
+            task_detail.save()
+           
+            
+            messages.success(request, "Task update Successfully")
+            return redirect('update-task',id)
+
 
 @login_required
 @permission_required('tasks.delete_task',login_url='no-permission')
@@ -210,3 +294,12 @@ def abc(request):
     t=Task.objects.all().order_by('-due_date')
 
     return render(request,'index.html',{'tasks':t})
+
+
+# class base view 
+
+class Test_class(View):
+    d ='hdgfrygfr'
+    def get(self,request):
+        
+        return HttpResponse(Test_class.d)

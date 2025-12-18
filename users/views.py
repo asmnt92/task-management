@@ -31,7 +31,8 @@ def login1(request):
         user=authenticate(request=request,username=u,password=p)
         if user:
             login(request,user)
-            return HttpResponse(f'Login user--{user}---{user.id}')
+            re=request.GET.get('next')
+            return redirect(re)
     return render(request,'registation/login.html')
 
 
