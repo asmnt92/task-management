@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test,login_required,permission_required
 from users.views import is_admin
 from django.views import View
+from django.views.generic.base import ContextMixin
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 
@@ -106,17 +107,18 @@ def create_task(request):
 decorators =[login_required(login_url='users:lg'),permission_required('tasks.add_task',login_url='no-permission')]
 
 @method_decorator(decorators ,name="dispatch")
-class TaskCreate(View):
+class TaskCreate(ContextMixin,View):
+
     form_class=TaskModelForm
     template_name = "task_form.html"
-    def get(self,request,*args,**kwargs):
-        task_form = self.form_class()
-        task_detail_form=TaskDetailModelForm() 
 
-        context = {
-        "task_form": task_form,
-        'task_detail':task_detail_form
-        }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["task_form"] =kwargs.get("task_form",self.form_class()) 
+        context['task_detail']=kwargs.get('task_detail',TaskDetailModelForm())
+        return context
+    def get(self,request,*args,**kwargs): 
+        context = self.get_context_data()
         return render(request,self.template_name, context)
 
     def post(self,request,*args,**kwargs):
@@ -134,7 +136,13 @@ class TaskCreate(View):
             
             messages.success(request, "Task Created Successfully")
             return redirect('create-task')
-   
+        
+        context=self.get_context_data(
+            task_form=task_form,
+            task_detail=task_detail_form
+        )
+        messages.error(request,'please fiil up the form')
+        return render(request,self.template_name, context)
 
 
 @login_required
